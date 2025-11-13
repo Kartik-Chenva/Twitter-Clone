@@ -44,19 +44,73 @@ python manage.py runserver
 Visit → http://127.0.0.1:8000/
 
 📸 Screenshots :
+
 🏠 Home Feed Page:
-<img width="1366" height="768" alt="Screenshot (393)" src="https://github.com/user-attachments/assets/f423798b-b4c0-4d46-9d5b-40a7c2c8b895" />
-<img width="1366" height="768" alt="Screenshot (394)" src="https://github.com/user-attachments/assets/d72b80be-3e2a-4b4c-8894-749a98f5e291" />
+
+<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/03aab128-66b9-4bdc-9f56-897c2aa56aa4" />
+
+<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/b88ba503-22c1-40a5-9294-dd0c86dd432e" />
 
 👤 User Profile Page:
-<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/6a1ca532-7cec-46d4-a2e2-e1ac1ef1e9fa" />
+
+<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/b793d2b5-d6e2-4c22-a0de-3d04b5f90c47" />
+
 
 👤 Admin Page:
-<img width="1366" height="768" alt="Screenshot (395)" src="https://github.com/user-attachments/assets/f070a21e-c380-46d9-a8ab-5465e4d5b4c3" />
+<img width="1366" height="768" alt="image" src="https://github.com/user-attachments/assets/9b573c35-217e-4064-8287-f7f7e0c78944" />
 
 
 💡 Additional Notes
      Make sure to create a superuser for admin access:
       python manage.py createsuperuser
 
-Keep your .env file secure and never push it to GitHub.
+User Login
+Username&Email : Kartik_4  & kartikravat26@gmail.com
+Password : Kartik@123
+
+
+Admin Login
+Username&Email  : admin & admin01@gmail.com
+Password : admin@123
+
+
+
+🐍Basic Commands in Python
+	-> Django Full Setup Commands (Clean Version)
+🔹 Step 1: Create Virtual Environment
+	python -m venv env	
+	env\Scripts\activate
+
+🔹 Step 2: Install Required Packages
+	pip install --upgrade pip
+	pip install django
+	pip install Pillow
+
+
+🔹 Step 3: Create Django Project
+	django-admin startproject  project
+	cd project
+
+🔹 Step 4: Apply Migrations
+	python manage.py migrate
+
+🔹 Step 5: Run the Server (to test project)
+python manage.py runserver
+
+🔹 Step 6: Create Django App
+	python manage.py startapp Myapp
+
+🔹 Step 7: Create urls.py inside Myapp
+(If file doesn’t exist)
+	cd Myapp
+	type nul > urls.py
+
+🔹 Step 8: Make Migrations and Migrate (after creating models)
+	python manage.py makemigrations
+	python manage.py migrate
+
+🔹 Step 9: Add Data in Database (via shell)
+	python manage.py shell
+
+✅ Final Step: Run the Project
+	python manage.py runserver
