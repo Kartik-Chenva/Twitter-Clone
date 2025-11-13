@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Twitter Clone{% endblock %}</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'tweets:home' %}">
+                <i class="fab fa-twitter"></i> Twitter Clone
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <!-- Search Form -->
+                <form class="d-flex mx-auto" action="{% url 'tweets:search' %}" method="get">
+                    <input class="form-control search-input me-2" type="search" placeholder="Search users or tweets..." name="q" aria-label="Search">
+                    <button class="btn btn-outline-light" type="submit"><i class="fas fa-search"></i></button>
+                </form>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'tweets:home' %}"><i class="fas fa-home"></i> Home</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'tweets:create_tweet' %}"><i class="fas fa-feather-alt"></i> New Tweet</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'tweets:profile' user.username %}"><i class="fas fa-user"></i> Profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'tweets:logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'tweets:login' %}"><i class="fas fa-sign-in-alt"></i> Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'tweets:register' %}"><i class="fas fa-user-plus"></i> Register</a>
+                        </li>
+                    {% endif %}
+                    <li class="nav-item" style="margin-top: 3px;">
+                        <div class="nav-link theme-toggle" id="theme-toggle">
+                            <i class="fas fa-moon"></i>
+                            <span>Dark Mode</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Messages -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Content Block -->
+        {% block content %}{% endblock %}
+    </div>
+
+<footer class="custom-footer text-center py-3 mt-5">
+    <div class="container">
+        <p class="mb-0">Twitter Clone &copy; {% now "Y" %}</p>
+    </div>
+</footer>
+
+<style>
+/* Base footer style */
+.custom-footer {
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Light Mode: Black Box with White Text */
+html[data-theme="light"] .custom-footer {
+    background-color: #fff;
+    color: #000;
+    border: 1px solid rgba(15, 15, 15, 0.2);
+}
+
+/* Dark Mode: White Box with Black Text */
+html[data-theme="dark"] .custom-footer {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.2); 
+}
+</style>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Theme JS -->
+    <script src="{% static 'js/theme.js' %}"></script>
+    <!-- Custom JS -->
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

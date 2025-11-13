@@ -1,0 +1,185 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<style>
+    .dashboard-container {
+        max-width: 1200px; /* bigger width */
+        margin: auto;
+        font-size: 17px; /* larger font */
+    }
+    .dashboard-container h2 {
+        font-size: 26px;
+    }
+    .card {
+        margin-bottom: 1.5rem;
+    }
+    .card-header {
+        padding: 12px 18px;
+        font-size: 17px;
+    }
+    .list-group-item {
+        padding: 12px 18px;
+        font-size: 16px;
+    }
+    .btn-sm {
+        padding: 6px 14px;
+        font-size: 15px;
+    }
+</style>
+
+<div class="container mt-4 dashboard-container">
+    <!-- Admin Info Header -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2 class="mb-0 ms-5">Site Administration Dashboard</h2>
+        </div>
+        <div class="col-md-4 text-end">
+            <div class="d-flex align-items-center justify-content-end">
+                <div class="me-3 text-end" >
+                    <div class="fw-bold">{{ user.username }}</div>
+                    <small>{{ user.email }}</small>
+                </div>
+                <div class="profile-image-container">
+                    {% if user.profile.profile_picture and user.profile.profile_picture.name != 'default.jpg' %}
+                        <img src="{{ user.profile.profile_picture.url }}" 
+                             alt="Profile" 
+                             class="rounded-circle border border-2 border-primary" 
+                             style="width: 50px; height: 50px; object-fit: cover;">
+                    {% else %}
+                        <div class="rounded-circle border border-2 border-primary d-flex align-items-center justify-content-center bg-light" 
+                             style="width: 50px; height: 50px;">
+                            <i class="fas fa-user text-muted"></i>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- LEFT SIDE: Authentication & Authorization -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-dark text-white fw-bold">
+                    <i class="fas fa-shield-alt me-2"></i>Authentication & Authorization
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-users me-2 text-primary"></i>
+                            <strong>Users</strong>
+                            <br><small class="text-muted">Manage user accounts and permissions</small>
+                        </div>
+                        <div>
+                            <span class="badge bg-primary me-2">{{ users_count }}</span>
+                            <a href="/custom_admin/users_table/" class="btn btn-sm btn-warning">
+                                <i class="fas fa-cog me-1"></i>Manage
+                            </a>
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-layer-group me-2 text-info"></i>
+                            <strong>Groups</strong>
+                            <br><small class="text-muted">User groups and roles</small>
+                        </div>
+                        <div>
+                            <span class="badge bg-info me-2">{{ groups_count }}</span>
+                            {% if groups_count == 0 %}
+                                <a href="#" 
+                                   class="btn btn-sm btn-warning" 
+                                   onclick="alert('No groups available to manage.'); return false;">
+                                   <i class="fas fa-cog me-1"></i>Manage
+                                </a>
+                            {% else %}
+                                <a href="/admin/auth/group/" class="btn btn-sm btn-warning">
+                                    <i class="fas fa-cog me-1"></i>Manage
+                                </a>
+                            {% endif %}
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDE: Tweets & Related Data -->
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-primary text-white fw-bold">
+                    <i class="fas fa-twitter me-2"></i>Tweets & Related Data
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-comment me-2 text-success"></i>
+                            <strong>Tweets</strong>
+                            <br><small class="text-muted">Manage all tweets and content</small>
+                        </div>
+                        <div>
+                            <span class="badge bg-success me-2">{{ tweets_count }}</span>
+                            <a href="/custom_admin/admin_tweets/" class="btn btn-sm btn-warning">
+                                <i class="fas fa-cog me-1"></i>Manage
+                            </a>
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-comments me-2 text-warning"></i>
+                            <strong>Comments</strong>
+                            <br><small class="text-muted">User comments on tweets</small>
+                        </div>
+                        <div>
+                            <span class="badge bg-warning me-2">{{ comments_count }}</span>
+                            <a href="/custom_admin/manage_comments/" class="btn btn-sm btn-warning">
+                                <i class="fas fa-cog me-1"></i>Manage
+                            </a>
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-heart me-2 text-danger"></i>
+                            <strong>Likes</strong>
+                            <br><small class="text-muted">Tweet likes and interactions</small>
+                        </div>
+                        <div>
+                            <span class="badge bg-danger me-2">{{ likes_count }}</span>
+                            <a href="/custom_admin/manage_likes/" class="btn btn-sm btn-warning">
+                                <i class="fas fa-cog me-1"></i>Manage
+                            </a>
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-user-friends me-2 text-info"></i>
+                            <strong>Follows</strong>
+                            <br><small class="text-muted">User follow relationships</small>
+                        </div>
+                        <div>
+                            <span class="badge bg-info me-2">{{ follows_count }}</span>
+                            <a href="/custom_admin/manage_follows/" class="btn btn-sm btn-warning">
+                                <i class="fas fa-cog me-1"></i>Manage
+                            </a>
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="fas fa-user-circle me-2 text-secondary"></i>
+                            <strong>Profiles</strong>
+                            <br><small class="text-muted">User profile information</small>
+                        </div>
+                        <div>
+                            <span class="badge bg-secondary me-2">{{ profiles_count }}</span>
+                            <a href="/custom_admin/manage_profiles/" class="btn btn-sm btn-warning">
+                                <i class="fas fa-cog me-1"></i>Manage
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

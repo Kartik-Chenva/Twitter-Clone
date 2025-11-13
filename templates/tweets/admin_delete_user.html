@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Delete User | Admin{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <!-- Delete Confirmation Card -->
+            <div class="card shadow-sm border-0" 
+                 style="background-color: var(--bs-body-bg); color: var(--bs-body-color);">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">
+                        <a href="{% url 'tweets:users_table' %}" class="text-white text-decoration-none me-3">
+                            <i class="fas fa-arrow-left"></i>
+                        </a>
+                        Delete User
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <!-- Warning Message -->
+                    <div class="alert alert-warning" role="alert">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Warning!</strong> This action cannot be undone. The user account and associated profile will be permanently deleted.
+                    </div>
+
+                    <!-- User Information -->
+                    <div class="mb-4">
+                        <h6 class="text-muted">User Information</h6>
+                        <div class="border rounded p-3 bg-light">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>ID:</strong> {{ user.id }}</p>
+                                    <p><strong>Username:</strong> {{ user.username }}</p>
+                                    <p><strong>Created:</strong> {{ user.date_joined|date:"Y-m-d H:i" }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Email:</strong></p>
+                                    <div class="border rounded p-2 bg-white">
+                                        {{ user.email }}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- User Details -->
+                            <div class="mt-3">
+                                <p><strong>User Details:</strong></p>
+                                <div class="border rounded p-2 bg-white">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p><strong>First Name:</strong> {{ user.first_name|default:"Not provided" }}</p>
+                                            <p><strong>Last Name:</strong> {{ user.last_name|default:"Not provided" }}</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p><strong>Staff Status:</strong> 
+                                                {% if user.is_staff %}
+                                                    <span class="badge bg-success">Staff</span>
+                                                {% else %}
+                                                    <span class="badge bg-secondary">Regular User</span>
+                                                {% endif %}
+                                            </p>
+                                            <p><strong>Account Status:</strong> 
+                                                {% if user.is_active %}
+                                                    <span class="badge bg-success">Active</span>
+                                                {% else %}
+                                                    <span class="badge bg-danger">Inactive</span>
+                                                {% endif %}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Associated Data -->
+                            <div class="mt-3">
+                                <p><strong>Associated Data:</strong></p>
+                                <div class="border rounded p-2 bg-white">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p><strong>Tweets:</strong> {{ user.tweets.count }}</p>
+                                            <p><strong>Comments:</strong> {{ user.comments.count }}</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p><strong>Likes Given:</strong> {{ user.likes.count }}</p>
+                                            <p><strong>Follows:</strong> {{ user.following.count }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Last Login -->
+                            <div class="mt-3">
+                                <p><strong>Last Login:</strong> 
+                                    {% if user.last_login %}
+                                        {{ user.last_login|date:"Y-m-d H:i" }}
+                                    {% else %}
+                                        Never
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Confirmation Form -->
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash-alt me-1"></i> Yes, Delete User
+                            </button>
+                            <a href="{% url 'tweets:users_table' %}" class="btn btn-secondary">
+                                <i class="fas fa-times me-1"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Dark Mode Styles -->
+<style>
+    body[data-bs-theme="dark"] .card {
+        background-color: #1c1c1c;
+        color: #f1f1f1;
+    }
+    body[data-bs-theme="dark"] .card .card-header {
+        background-color: #dc3545;
+        color: white;
+    }
+    body[data-bs-theme="dark"] .bg-light {
+        background-color: #2a2a2a !important;
+        color: #f1f1f1;
+    }
+    body[data-bs-theme="dark"] .bg-white {
+        background-color: #1c1c1c !important;
+        color: #f1f1f1;
+    }
+</style>
+{% endblock %}
+
+

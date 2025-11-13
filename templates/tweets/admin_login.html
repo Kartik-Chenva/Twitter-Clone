@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Login{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-warning text-dark text-center">
+                <h3 class="mb-0">Admin Login</h3>
+            </div>
+            <div class="card-body">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="username_or_email" class="form-label">Username or Email</label>
+                        <input type="text" name="username_or_email" id="username_or_email" class="form-control" placeholder="Enter your username or email" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" name="password" id="password" class="form-control" required>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-warning rounded-pill">
+                            <i class="fas fa-shield-alt me-1"></i> Login to Admin Panel
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-center text-muted small">
+                Only admin users can access this panel.
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

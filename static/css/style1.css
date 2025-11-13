@@ -1,0 +1,69 @@
+
+/* Perfect padding and spacing for user suggestions */
+.user-suggestions .list-group-item {
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.user-suggestions .list-group-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+/* Image and text spacing */
+.user-suggestions img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+}
+
+/* Text spacing under username */
+.user-suggestions h6 {
+    margin-bottom: 0;
+    font-weight: 600;
+}
+
+.user-suggestions small {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+/* Follow button spacing */
+.user-suggestions .btn-follow {
+    background: linear-gradient(135deg, #1da1f2, #0d8ddb);
+    color: #fff;
+    font-weight: 500;
+    padding: 6px 16px;
+    border: none;
+    box-shadow: 0 3px 6px rgba(29, 161, 242, 0.3);
+    transition: 0.3s ease;
+    font-size: 0.875rem;
+}
+
+.user-suggestions .btn-follow:hover {
+    background: linear-gradient(135deg, #0d8ddb, #1a91da);
+    box-shadow: 0 5px 10px rgba(13, 141, 219, 0.5);
+    text-decoration: none;
+}
+
+/* Responsive padding */
+@media (max-width: 576px) {
+    .user-suggestions .list-group-item {
+        padding: 0.5rem 0;
+    }
+
+    .user-suggestions img {
+        width: 45px;
+        height: 45px;
+    }
+
+    .user-suggestions .btn-follow {
+        padding: 4px 12px;
+        font-size: 0.8rem;
+    }
+}
+

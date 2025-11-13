@@ -1,0 +1,258 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Follow Relationship{% endblock %}
+
+{% block content %}
+<style>
+    .follow-info-card {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 15px;
+        border-left: 4px solid #0d6efd;
+    }
+    .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    }
+    .btn-action {
+        transition: all 0.3s ease;
+    }
+    .btn-action:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    .relationship-display {
+        background: rgba(13, 110, 253, 0.1);
+        border: 1px solid rgba(13, 110, 253, 0.2);
+        border-radius: 10px;
+        padding: 15px;
+    }
+    .metadata-item {
+        background: white;
+        border-radius: 8px;
+        padding: 10px 15px;
+        margin-bottom: 10px;
+        border: 1px solid #e9ecef;
+    }
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #0d6efd, #6f42c1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 16px;
+    }
+</style>
+
+<div class="container mt-5">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h4 class="mb-2">    
+                <a href="{% url 'tweets:manage_follows' %}" style="text-decoration: none; color: #6c757d;">
+                    <i class="fas fa-arrow-left me-2"></i>
+                </a> Edit Follow Relationship #{{ follow.id }}
+            </h4>
+            <p class="text-muted mb-0">
+                <i class="fas fa-users me-1"></i> Manage User Connections 
+                <span class="mx-2">•</span>
+                <i class="fas fa-calendar me-1"></i> Created: {{ follow.created_at|date:"M d, Y H:i" }}
+            </p>
+        </div>
+        <div class="col-md-4 text-end">
+            <span class="badge bg-primary fs-6">Follow Management</span>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Left Column - Follow Information -->
+        <div class="col-md-4 mb-4">
+            <div class="card follow-info-card shadow-sm">
+                <div class="card-header bg-transparent border-0">
+                    <h6 class="mb-0 text-primary">
+                        <i class="fas fa-info-circle me-2"></i>Follow Details
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <!-- Current Relationship Display -->
+                    <div class="relationship-display mb-3">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div class="d-flex align-items-center">
+                                <div class="user-avatar me-2">
+                                    {{ follow.follower.username|first|upper }}
+                                </div>
+                                <div>
+                                    <strong>{{ follow.follower.username }}</strong>
+                                    <small class="text-muted d-block">Follower</small>
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <i class="fas fa-arrow-right text-primary"></i>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <div class="text-center me-2">
+                                    <i class="fas fa-arrow-left text-primary"></i>
+                                </div>
+                                <div class="user-avatar">
+                                    {{ follow.following.username|first|upper }}
+                                </div>
+                            </div>
+                            <div class="ms-2">
+                                <strong>{{ follow.following.username }}</strong>
+                                <small class="text-muted d-block">Following</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Follower Information -->
+                    <div class="metadata-item">
+                        <small class="text-muted d-block">Follower (User)</small>
+                        <strong>{{ follow.follower.username }}</strong>
+                        <div class="mt-1">
+                            <span class="badge bg-secondary">{{ follow.follower.email }}</span>
+                        </div>
+                        <small class="text-muted">
+                            Joined: {{ follow.follower.date_joined|date:"M d, Y" }}
+                        </small>
+                    </div>
+
+                    <!-- Following Information -->
+                    <div class="metadata-item">
+                        <small class="text-muted d-block">Following (User)</small>
+                        <strong>{{ follow.following.username }}</strong>
+                        <div class="mt-1">
+                            <span class="badge bg-secondary">{{ follow.following.email }}</span>
+                        </div>
+                        <small class="text-muted">
+                            Joined: {{ follow.following.date_joined|date:"M d, Y" }}
+                        </small>
+                    </div>
+
+                    <!-- Relationship Details -->
+                    <div class="metadata-item">
+                        <small class="text-muted d-block">Relationship ID</small>
+                        <code class="text-primary">{{ follow.id }}</code>
+                        <div class="mt-1">
+                            <small class="text-muted">
+                                Created: {{ follow.created_at|date:"M d, Y" }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column - Edit Form -->
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-edit me-2"></i>Edit Follow Relationship
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Current Relationship Display -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold text-muted">
+                            <i class="fas fa-eye me-1"></i>Current Relationship:
+                        </label>
+                        <div class="relationship-display">
+                            <div class="text-center">
+                                <strong>{{ follow.follower.username }}</strong>
+                                <i class="fas fa-arrow-right mx-3 text-primary"></i>
+                                <strong>{{ follow.following.username }}</strong>
+                            </div>
+                            <p class="text-center text-muted mb-0 mt-2">
+                                <small>{{ follow.follower.username }} follows {{ follow.following.username }}</small>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Edit Form -->
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.follower.id_for_label }}" class="form-label fw-bold">
+                                    <i class="fas fa-user me-1"></i>Follower (User):
+                                </label>
+                                {{ form.follower }}
+                                {% if form.follower.errors %}
+                                    <div class="alert alert-danger mt-2">
+                                        {% for error in form.follower.errors %}
+                                            <small><i class="fas fa-exclamation-triangle me-1"></i>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Select the user who will be following
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.following.id_for_label }}" class="form-label fw-bold">
+                                    <i class="fas fa-user-plus me-1"></i>Following (User):
+                                </label>
+                                {{ form.following }}
+                                {% if form.following.errors %}
+                                    <div class="alert alert-danger mt-2">
+                                        {% for error in form.following.errors %}
+                                            <small><i class="fas fa-exclamation-triangle me-1"></i>{{ error }}</small>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Select the user to be followed
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex gap-3">
+                            <button type="submit" class="btn btn-success btn-action px-4">
+                                <i class="fas fa-save me-2"></i>Update Relationship
+                            </button>
+                            <a href="{% url 'tweets:manage_follows' %}" class="btn btn-outline-secondary btn-action px-4">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                            <a href="{% url 'tweets:profile' follow.follower.username %}" class="btn btn-outline-info btn-action px-4" target="_blank">
+                                <i class="fas fa-external-link-alt me-2"></i>View Follower
+                            </a>
+                            <a href="{% url 'tweets:profile' follow.following.username %}" class="btn btn-outline-info btn-action px-4" target="_blank">
+                                <i class="fas fa-external-link-alt me-2"></i>View Following
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Information Section -->
+            <div class="alert alert-info mt-4">
+                <i class="fas fa-info-circle me-2"></i>
+                <strong>Note:</strong> Changing follow relationships will affect the social connections between users. 
+                Make sure both users exist in the system before updating.
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Enhance form styling
+document.addEventListener('DOMContentLoaded', function() {
+    // Add custom styling to select elements
+    const selects = document.querySelectorAll('select[name="follower"], select[name="following"]');
+    selects.forEach(select => {
+        select.classList.add('form-select');
+        select.style.borderRadius = '10px';
+        select.style.border = '2px solid #e9ecef';
+        select.style.transition = 'all 0.3s ease';
+    });
+});
+</script>
+{% endblock %}

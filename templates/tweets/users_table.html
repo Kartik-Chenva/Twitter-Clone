@@ -1,0 +1,238 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Users{% endblock %}
+
+{% block content %}
+<style>
+    .profile-table th, .profile-table td {
+        vertical-align: middle;
+        font-size: 14.5px;
+        padding: 8px;
+    }
+    .profile-table th {
+        color: white;
+        background-color: rgb(27, 26, 26);
+        font-weight: 600;
+    }
+    .action-buttons a {
+        margin-right: 5px;
+    }
+    .btn-circle {
+        width: 32px;
+        height: 32px;
+        padding: 0;
+        border-radius: 50%;
+        text-align: center;
+        font-size: 14px;
+        line-height: 32px;
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h5>
+                <a href="/custom_admin/" style="text-decoration: none;">
+                    <i class="fas fa-arrow-left"></i>
+                </a> All Users
+                <span class="badge bg-secondary">{{ users.paginator.count }}</span>
+            </h5>
+        </div>
+        <div class="col-md-6">
+            <form method="GET" class="d-flex">
+                <div class="input-group">
+                    <input type="text"
+                           class="form-control"
+                           name="search_query"
+                           placeholder="Search by username or email..."
+                           value="{{ request.GET.search_query }}"
+                           style="border-radius: 25px 0 0 25px; color: #0d6efd;">
+                    <button class="btn btn-outline-primary" type="submit"
+                            style="border-radius: 0 25px 25px 0;">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    {% if request.GET.search_query %}
+                        <a href="{% url 'tweets:users_table' %}"
+                           class="btn btn-outline-secondary ms-2"
+                           title="Clear search">
+                            <i class="fas fa-times"></i>
+                        </a>
+                    {% endif %}
+                </div>
+            </form>
+            <small class="text-muted mt-1 d-block">
+                <i class="fas fa-info-circle me-1"></i>
+                Enter part of a username or email address
+            </small>
+        </div>
+    </div>
+
+    {% if request.GET.search_query %}
+        <div class="alert alert-info mb-3">
+            <i class="fas fa-search me-2"></i>
+            <strong>Search Results:</strong> Showing users matching "{{ request.GET.search_query }}"
+            <span class="badge bg-primary ms-2">{{ users.paginator.count }} result(s)</span>
+        </div>
+    {% endif %}
+
+    <!-- Messages Display -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-3" role="alert">
+                <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-triangle{% else %}info-circle{% endif %} me-2"></i>
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <table class="table table-bordered profile-table">
+        <thead class="table-dark">
+            <tr>
+                <th>#</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Password Hash Info</th>
+                <th>Staff Status</th>
+                <th>Active</th>
+                <th>Date Joined</th>
+                <th>Last Login</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr style="color: rgb(136, 125, 125); font-weight: 600;">
+                <td>{{ forloop.counter0|add:users.start_index }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.first_name|default:"-" }}</td>
+                <td>{{ user.last_name|default:"-" }}</td>
+                <td>
+                    {{ user.password|truncatechars:20 }}
+                    <br>
+                    <small>pbkdf2_sha256<br>(1000000 iterations)</small>
+                </td>
+                <td class="text-center">
+                    {% if user.is_staff %}
+                        <i class="fas fa-check-circle text-success"></i>
+                    {% else %}
+                        <i class="fas fa-times-circle text-danger"></i>
+                    {% endif %}
+                </td>
+                <td class="text-center">
+                    {% if user.is_active %}
+                        <i class="fas fa-check-circle text-success"></i>
+                    {% else %}
+                        <i class="fas fa-times-circle text-danger"></i>
+                    {% endif %}
+                </td>
+                <td>{{ user.date_joined|date:"F d, Y, g:i a" }}</td>
+                <td>
+                    {% if user.last_login %}
+                        {{ user.last_login|date:"F d, Y, g:i a" }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td class="text-center" style="white-space: nowrap;">
+                    <a href="{% url 'tweets:edit_user' user.id %}" 
+                       class="btn btn-outline-primary btn-circle btn-sm" 
+                       title="Edit User">
+                        <i class="fas fa-edit fa-sm"></i>
+                    </a>
+                    <a href="{% url 'tweets:delete_user' user.id %}" 
+                       class="btn btn-outline-danger btn-circle btn-sm" 
+                       title="Delete User">
+                        <i class="fas fa-trash-alt fa-sm"></i>
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="11" class="text-center">No users found.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- 🌍 Pagination -->
+    <nav aria-label="Page navigation" class="mt-5" style="margin: 8px;">
+      <ul class="pagination justify-content-center" style="gap:6px;">
+
+        <!-- Previous -->
+        {% if users.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ users.previous_page_number }}"
+               style="color:#0d6efd; font-size:14px; font-weight:500;
+                      border:1px solid #dee2e6; background:#fff; 
+                      padding:8px 14px; border-radius:50px; 
+                      transition:all 0.2s ease;"
+               onmouseover="this.style.background='#0d6efd'; this.style.color='white';"
+               onmouseout="this.style.background='white'; this.style.color='#0d6efd';">
+              ‹ Previous
+            </a>
+          </li>
+        {% else %}
+          <li class="page-item disabled">
+            <span class="page-link"
+                  style="color:#adb5bd; font-size:14px; padding:8px 14px;
+                         border:1px solid #dee2e6; border-radius:50px; background:#f8f9fa;">
+              ‹ Previous
+            </span>
+          </li>
+        {% endif %}
+
+        <!-- Numbers -->
+        {% for num in users.paginator.page_range %}
+          {% if num == users.number %}
+            <li class="page-item active">
+              <span class="page-link"
+                    style="color:white; background:#0d6efd; border-radius:50%; 
+                           width:38px; height:38px; display:flex; align-items:center; 
+                           justify-content:center; font-weight:600; border:none;
+                           box-shadow:0 3px 6px rgba(0,0,0,0.15);">
+                {{ num }}
+              </span>
+            </li>
+          {% elif num >= users.number|add:'-3' and num <= users.number|add:'3' %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ num }}"
+                 style="color:#0d6efd; font-size:14px; border:1px solid #dee2e6;
+                        width:38px; height:38px; display:flex; align-items:center; 
+                        justify-content:center; border-radius:50%; background:white;
+                        transition:all 0.2s ease;"
+                 onmouseover="this.style.background='#e7f1ff';"
+                 onmouseout="this.style.background='white';">
+                {{ num }}
+              </a>
+            </li>
+          {% endif %}
+        {% endfor %}
+
+        <!-- Next -->
+        {% if users.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ users.next_page_number }}"
+               style="color:#0d6efd; font-size:14px; font-weight:500;
+                      border:1px solid #dee2e6; background:#fff; 
+                      padding:8px 14px; border-radius:50px; 
+                      transition:all 0.2s ease;"
+               onmouseover="this.style.background='#0d6efd'; this.style.color='white';"
+               onmouseout="this.style.background='white'; this.style.color='#0d6efd';">
+              Next ›
+            </a>
+          </li>
+        {% else %}
+          <li class="page-item disabled">
+            <span class="page-link"
+                  style="color:#adb5bd; font-size:14px; padding:8px 14px;
+                         border:1px solid #dee2e6; border-radius:50px; background:#f8f9fa;">
+              Next ›
+            </span>
+          </li>
+        {% endif %}
+      </ul>
+    </nav>
+</div>
+{% endblock %}

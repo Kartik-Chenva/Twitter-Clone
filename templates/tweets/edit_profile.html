@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-md-12">
+
+            <!-- Profile Details Table -->
+            <div class="card shadow-sm border-0 mb-4" 
+                 style="background-color: var(--bs-body-bg); color: var(--bs-body-color);">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Profile Details</h4>
+                </div>
+                <div class="card-body">
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered align-middle text-center">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Profile</th>
+                                    <th>Username</th>
+                                    <th>Email</th>
+                                    <th>Bio</th>
+                                    <th>Date Joined</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        {% if form.instance.profile_picture %}
+                                            <img src="{{ form.instance.profile_picture.url }}" 
+                                                 alt="Profile" class="rounded-circle" 
+                                                 style="width:50px; height:50px; object-fit:cover;">
+                                        {% else %}
+                                            <img src="{% static 'default.jpg' %}" 
+                                                 alt="Default" class="rounded-circle" 
+                                                 style="width:50px; height:50px; object-fit:cover;">
+                                        {% endif %}
+                                        <div>{{ form.instance.user.get_full_name|default:form.instance.user.username }}</div>
+                                    </td>
+                                    <td>{{ form.instance.user.username }}</td>
+                                    <td>{{ form.instance.user.email }}</td>
+                                    <td>{{ form.instance.bio }}</td>
+                                    <td>{{ form.instance.user.date_joined|date:"Y-m-d" }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Edit Profile Form -->
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Edit Profile</h4>
+                </div>
+                <div class="card-body">
+
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div class="row">
+                            <!-- Left Column - User Information -->
+                            <div class="col-md-6">
+                                <h5 class="mb-3 text-primary">User Information</h5>
+                                
+                                <!-- Username -->
+                                <div class="mb-3">
+                                    <label for="{{ form.username.id_for_label }}" class="form-label">Username:</label>
+                                    {{ form.username|add_class:"form-control" }}
+                                    {% if form.username.errors %}
+                                        <div class="text-danger">{{ form.username.errors }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Email -->
+                                <div class="mb-3">
+                                    <label for="{{ form.email.id_for_label }}" class="form-label">Email:</label>
+                                    {{ form.email|add_class:"form-control" }}
+                                    {% if form.email.errors %}
+                                        <div class="text-danger">{{ form.email.errors }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- First Name -->
+                                <div class="mb-3">
+                                    <label for="{{ form.first_name.id_for_label }}" class="form-label">First Name:</label>
+                                    {{ form.first_name|add_class:"form-control" }}
+                                    {% if form.first_name.errors %}
+                                        <div class="text-danger">{{ form.first_name.errors }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Last Name -->
+                                <div class="mb-3">
+                                    <label for="{{ form.last_name.id_for_label }}" class="form-label">Last Name:</label>
+                                    {{ form.last_name|add_class:"form-control" }}
+                                    {% if form.last_name.errors %}
+                                        <div class="text-danger">{{ form.last_name.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <!-- Right Column - Profile Information -->
+                            <div class="col-md-6">
+                                <h5 class="mb-3 text-primary">Profile Information</h5>
+                                
+                                <!-- Bio -->
+                                <div class="mb-3">
+                                    <label for="{{ form.bio.id_for_label }}" class="form-label">Bio:</label>
+                                    {{ form.bio|add_class:"form-control"|attr:"rows:4" }}
+                                    {% if form.bio.errors %}
+                                        <div class="text-danger">{{ form.bio.errors }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Profile Picture -->
+                                <div class="mb-3">
+                                    <label class="form-label">Profile Picture:</label>
+                                    <div class="mb-2">
+                                        {% if form.instance.profile_picture %}
+                                            <img src="{{ form.instance.profile_picture.url }}" 
+                                                 alt="Profile Picture" class="img-thumbnail" style="width:150px;">
+                                        {% else %}
+                                            <img src="{% static 'default.jpg' %}" 
+                                                 alt="Default" class="img-thumbnail" style="width:150px;">
+                                        {% endif %}
+                                    </div>
+                                    {{ form.profile_picture|add_class:"form-control" }}
+                                    {% if form.profile_picture.errors %}
+                                        <div class="text-danger">{{ form.profile_picture.errors }}</div>
+                                    {% endif %}
+                                    <div class="form-text">Upload a new profile picture (optional)</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex justify-content-between mt-4">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-save me-1"></i> Save Changes
+                            </button>
+                            <a href="{% url 'tweets:manage_profiles' %}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-1"></i> Back to Profiles
+                            </a>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Dark Mode Styles -->
+<style>
+    body[data-bs-theme="dark"] .card {
+        background-color: #1c1c1c;
+        color: #f1f1f1;
+    }
+    body[data-bs-theme="dark"] .card .card-header {
+        background-color: #0d6efd;
+        color: white;
+    }
+    body[data-bs-theme="dark"] .table {
+        color: #f1f1f1;
+    }
+    body[data-bs-theme="dark"] .form-control, 
+    body[data-bs-theme="dark"] .form-select {
+        background-color: #2a2a2a;
+        color: #f1f1f1;
+        border-color: #444;
+    }
+</style>
+{% endblock %}

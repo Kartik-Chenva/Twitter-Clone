@@ -1,0 +1,182 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Tweets{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h5>    
+                <a href="/custom_admin/" style="text-decoration: none;">
+                    <i class="fas fa-arrow-left"></i>
+                </a> All Tweets 
+                <span class="badge bg-secondary">{{ tweets.count }}</span>
+            </h5>
+        </div>
+        <div class="col-md-6">
+            <!-- Unified Search Form -->
+            <form method="GET" class="d-flex">
+                <div class="input-group">
+                    <input type="text" 
+                           class="form-control" 
+                           name="search_query" 
+                           placeholder="Search by username or date (YYYY-MM-DD)..." 
+                           value="{{ request.GET.search_query }}"
+                           style="border-radius: 25px 0 0 25px; color: #0d6efd;">
+                    <button class="btn btn-outline-primary" 
+                            type="submit"
+                            style="border-radius: 0 25px 25px 0;">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    {% if request.GET.search_query %}
+                        <a href="{% url 'tweets:admin_tweets' %}" 
+                           class="btn btn-outline-secondary ms-2"
+                           title="Clear search">
+                            <i class="fas fa-times"></i>
+                        </a>
+                    {% endif %}
+                </div>
+            </form>
+            <small class="text-muted mt-1 d-block">
+                <i class="fas fa-info-circle me-1"></i>
+                Enter username or date in YYYY-MM-DD format (e.g., 2024-01-15)
+            </small>
+        </div>
+    </div>
+
+    <!-- Search Results Indicator -->
+    {% if request.GET.search_query %}
+        <div class="alert alert-info mb-3">
+            <i class="fas fa-search me-2"></i>
+            <strong>Search Results:</strong> Showing tweets matching "{{ request.GET.search_query }}"
+            <span class="badge bg-primary ms-2">{{ tweets|length }} result(s)</span>
+        </div>
+    {% endif %}
+
+    <table class="table table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>User</th>
+                <th>Content</th>    
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for tweet in tweets %}
+            <tr style="text-decoration: none; color:  rgb(136, 125, 125); font-weight: 600; ">
+                <td>{{ forloop.counter }}</td>
+                <td>{{ tweet.user.username }}</td>
+                <td>{{ tweet.content|truncatechars:50 }}</td>
+                <td>{{ tweet.created_at|date:"Y-m-d H:i" }}</td>
+                <td class="text-center" style="white-space: nowrap;">
+                    <a href="{% url 'tweets:admin_edit_tweet' tweet.id %}" 
+                       class="btn btn-outline-primary btn-circle btn-sm" 
+                       title="Edit Tweet">
+                        <i class="fas fa-edit fa-sm"></i>
+                    </a>
+                    <a href="{% url 'tweets:admin_delete_tweet' tweet.id %}" 
+                       class="btn btn-outline-danger btn-circle btn-sm" 
+                       title="Delete Tweet">
+                        <i class="fas fa-trash-alt fa-sm"></i>
+                    </a>
+                </td>
+                <style>
+                    .btn-circle {
+                    width: 32px;
+                    height: 32px;
+                    padding: 0;
+                    border-radius: 50%;
+                    text-align: center;
+                    font-size: 14px;
+                    line-height: 32px;
+                }
+                </style>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Premium World-Class Pagination -->
+<nav aria-label="Page navigation" class="mt-5"  style="margin: 100px;">
+  <ul class="pagination justify-content-center" style="gap:6px;">
+
+    <!-- Previous button -->
+    {% if tweets.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ tweets.previous_page_number }}"
+           style="color:#0d6efd; font-size:14px; font-weight:500;
+                  border:1px solid #dee2e6; background:#fff; 
+                  padding:8px 14px; border-radius:50px; 
+                  transition:all 0.2s ease;"
+           onmouseover="this.style.background='#0d6efd'; this.style.color='white';"
+           onmouseout="this.style.background='white'; this.style.color='#0d6efd';">
+          ‹ Previous
+        </a>
+      </li>
+    {% else %}
+      <li class="page-item disabled">
+        <span class="page-link"
+              style="color:#adb5bd; font-size:14px; padding:8px 14px;
+                     border:1px solid #dee2e6; border-radius:50px; background:#f8f9fa;">
+          ‹ Previous
+        </span>
+      </li>
+    {% endif %}
+
+    <!-- Page numbers -->
+    {% for num in tweets.paginator.page_range %}
+      {% if num == tweets.number %}
+        <li class="page-item active">
+          <span class="page-link"
+                style="color:white; background:#0d6efd; border-radius:50%; 
+                       width:38px; height:38px; display:flex; align-items:center; 
+                       justify-content:center; font-weight:600; border:none;
+                       box-shadow:0 3px 6px rgba(0,0,0,0.15);">
+            {{ num }}
+          </span>
+        </li>
+      {% elif num >= tweets.number|add:'-3' and num <= tweets.number|add:'3' %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ num }}"
+             style="color:#0d6efd; font-size:14px; border:1px solid #dee2e6;
+                    width:38px; height:38px; display:flex; align-items:center; 
+                    justify-content:center; border-radius:50%; background:white;
+                    transition:all 0.2s ease;"
+             onmouseover="this.style.background='#e7f1ff';"
+             onmouseout="this.style.background='white';">
+            {{ num }}
+          </a>
+        </li>
+      {% endif %}
+    {% endfor %}
+
+    <!-- Next button -->
+    {% if tweets.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ tweets.next_page_number }}"
+           style="color:#0d6efd; font-size:14px; font-weight:500;
+                  border:1px solid #dee2e6; background:#fff; 
+                  padding:8px 14px; border-radius:50px; 
+                  transition:all 0.2s ease;"
+           onmouseover="this.style.background='#0d6efd'; this.style.color='white';"
+           onmouseout="this.style.background='white'; this.style.color='#0d6efd';">
+          Next ›
+        </a>
+      </li>
+    {% else %}
+      <li class="page-item disabled">
+        <span class="page-link"
+              style="color:#adb5bd; font-size:14px; padding:8px 14px;
+                     border:1px solid #dee2e6; border-radius:50px; background:#f8f9fa;">
+          Next ›
+        </span>
+      </li>
+    {% endif %}
+
+  </ul>
+</nav>
+
+{% endblock %}

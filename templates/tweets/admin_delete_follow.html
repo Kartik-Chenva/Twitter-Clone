@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Delete Follow Relationship | Admin{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
+            <!-- Delete Confirmation Card -->
+            <div class="card shadow-sm border-0" 
+                 style="background-color: var(--bs-body-bg); color: var(--bs-body-color);">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">
+                        <a href="{% url 'tweets:manage_follows' %}" class="text-white text-decoration-none me-3">
+                            <i class="fas fa-arrow-left"></i>
+                        </a>
+                        Delete Follow Relationship
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <!-- Warning Message -->
+                    <div class="alert alert-warning" role="alert">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Warning!</strong> This action cannot be undone. The follow relationship will be permanently deleted.
+                    </div>
+
+                    <!-- Follow Relationship Information -->
+                    <div class="mb-4">
+                        <h6 class="text-muted">Follow Relationship Information</h6>
+                        <div class="border rounded p-3 bg-light">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>ID:</strong> {{ follow.id }}</p>
+                                    <p><strong>Created:</strong> {{ follow.created_at|date:"Y-m-d H:i" }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Relationship:</strong></p>
+                                    <div class="border rounded p-2 bg-white">
+                                        <div class="text-center">
+                                            <strong>{{ follow.follower.username }}</strong>
+                                            <i class="fas fa-arrow-right mx-2 text-primary"></i>
+                                            <strong>{{ follow.following.username }}</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Follower Information -->
+                            <div class="mt-3">
+                                <p><strong>Follower (User):</strong></p>
+                                <div class="border rounded p-2 bg-white">
+                                    <div class="d-flex align-items-center">
+                                        <div class="user-avatar me-2">
+                                            {{ follow.follower.username|first|upper }}
+                                        </div>
+                                        <div>
+                                            <strong>{{ follow.follower.username }}</strong>
+                                            <div class="text-muted">{{ follow.follower.email }}</div>
+                                            <small class="text-muted">Joined: {{ follow.follower.date_joined|date:"M d, Y" }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Following Information -->
+                            <div class="mt-3">
+                                <p><strong>Following (User):</strong></p>
+                                <div class="border rounded p-2 bg-white">
+                                    <div class="d-flex align-items-center">
+                                        <div class="user-avatar me-2">
+                                            {{ follow.following.username|first|upper }}
+                                        </div>
+                                        <div>
+                                            <strong>{{ follow.following.username }}</strong>
+                                            <div class="text-muted">{{ follow.following.email }}</div>
+                                            <small class="text-muted">Joined: {{ follow.following.date_joined|date:"M d, Y" }}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Confirmation Form -->
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash-alt me-1"></i> Yes, Delete Relationship
+                            </button>
+                            <a href="{% url 'tweets:manage_follows' %}" class="btn btn-secondary">
+                                <i class="fas fa-times me-1"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- User Avatar Styles -->
+<style>
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #0d6efd, #6f42c1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: bold;
+        font-size: 16px;
+    }
+</style>
+
+<!-- Dark Mode Styles -->
+<style>
+    body[data-bs-theme="dark"] .card {
+        background-color: #1c1c1c;
+        color: #f1f1f1;
+    }
+    body[data-bs-theme="dark"] .card .card-header {
+        background-color: #dc3545;
+        color: white;
+    }
+    body[data-bs-theme="dark"] .bg-light {
+        background-color: #2a2a2a !important;
+        color: #f1f1f1;
+    }
+    body[data-bs-theme="dark"] .bg-white {
+        background-color: #1c1c1c !important;
+        color: #f1f1f1;
+    }
+</style>
+{% endblock %}
+
+
+

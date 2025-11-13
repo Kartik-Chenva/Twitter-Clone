@@ -1,0 +1,352 @@
+/* Custom styles for Twitter Clone */
+
+
+
+:root {
+    /* Light theme variables */
+    --bg-color: #f8f9fa;
+    --text-color: #212529;
+    --card-bg: #ffffff;
+    --card-border: rgba(0, 0, 0, 0.125);
+    --card-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    --muted-text: #6c757d;
+    --border-color: #e6ecf0;
+    --hover-bg: #f5f8fa;
+    --primary-color: #1DA1F2;
+    --primary-hover: #1a91da;
+    --navbar-bg: #1DA1F2;
+    --navbar-text: #ffffff;
+    --input-bg: #ffffff;
+    --input-border: #ced4da;
+}
+
+[data-theme="dark"] {
+    /* Dark theme variables */
+    --bg-color: #15202b;
+    --text-color: #ffffff;
+    --card-bg: #192734;
+    --card-border: #38444d;
+    --card-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    --muted-text: #8899a6;
+    --border-color: #38444d;
+    --hover-bg: #22303c;
+    --primary-color: #1DA1F2;
+    --primary-hover: #1a91da;
+    --navbar-bg: #192734;
+    --navbar-text: #ffffff;
+    --input-bg: #253341;
+    --input-border: #38444d;
+}
+
+/* Body and general styles */
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Navbar styles */
+.navbar {
+    background-color: var(--navbar-bg) !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+.navbar-brand i {
+    color: #ffffff;
+    font-size: 1.5rem;
+}
+
+.navbar-dark .navbar-nav .nav-link {
+    color: var(--navbar-text);
+}
+
+/* Card styles */
+.card {
+    border-radius: 15px;
+    box-shadow: var(--card-shadow);
+    margin-bottom: 20px;
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+}
+
+.card:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    background-color: var(--card-bg);
+    border-bottom: 1px solid var(--border-color);
+    padding: 15px 20px;
+    font-weight: bold;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+/* Tweet styles */
+.tweet-content {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.tweet-card {
+    transition: transform 0.2s ease;
+}
+
+.tweet-card:hover {
+    transform: translateY(-2px);
+}
+
+/* Profile styles */
+.profile-header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 30px;
+    border-radius: 15px 15px 0 0;
+}
+
+.profile-stats {
+    display: flex;
+    justify-content: space-around;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.profile-stat {
+    text-align: center;
+}
+
+.profile-stat-value {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.profile-stat-label {
+    color: var(--muted-text);
+    font-size: 0.9rem;
+}
+
+/* Form styles */
+textarea, input, select {
+    background-color: var(--input-bg) !important;
+    border-color: var(--input-border) !important;
+    color: var(--text-color) !important;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+/* Search input specific styles */
+.search-input {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    border-color: transparent !important;
+    color: white !important;
+}
+
+.search-input::placeholder {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.search-input:focus {
+    background-color: white !important;
+    color: #333 !important;
+}
+
+.search-input:focus::placeholder {
+    color: #999 !important;
+}
+
+textarea {
+    resize: none;
+    border-radius: 15px;
+    padding: 15px;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 0.25rem rgba(29, 161, 242, 0.25);
+    border-color: var(--primary-color) !important;
+}
+
+/* Button styles */
+.btn {
+    border-radius: 30px;
+    padding: 8px 20px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-primary, .bg-primary {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(29, 161, 242, 0.3);
+}
+
+.btn-outline-primary {
+    color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+    transform: translateY(-2px);
+}
+
+/* Like button animation */
+.like-btn {
+    transition: all 0.3s ease;
+}
+
+.like-btn:hover {
+    transform: scale(1.2);
+}
+
+.like-btn i.fas.fa-heart {
+    color: #e0245e !important;
+}
+
+/* Theme toggle button */
+.theme-toggle {
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.theme-toggle i {
+    font-size: 1.2rem;
+    margin-right: 5px;
+}
+
+/* Footer styles */
+footer {
+    border-top: 1px solid var(--border-color);
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    padding: 20px 0;
+    margin-top: 50px;
+}
+
+/* User suggestions and trending */
+.user-suggestion-item {
+    transition: all 0.3s ease;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.user-suggestion-item:hover {
+    background-color: var(--hover-bg);
+}
+
+/* Trending section styles */
+.trending-card {
+    border: none;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+}
+
+.trending-header {
+    background: linear-gradient(135deg, #1DA1F2, #0C85D0);
+    border-bottom: none;
+    padding: 15px 20px;
+}
+
+.trending-item {
+    transition: all 0.3s ease;
+    background-color: rgba(29, 161, 242, 0.1);
+    margin-bottom: 10px;
+}
+
+.trending-item:hover {
+    background-color: rgba(29, 161, 242, 0.2);
+    transform: translateY(-2px);
+}
+
+.trending-topic {
+    color: #1DA1F2;
+}
+
+.trending-count {
+    color: #657786;
+    font-size: 0.85rem;
+}
+
+.trending-icon {
+    color: #1DA1F2;
+}
+
+.trending-empty-icon {
+    color: rgba(29, 161, 242, 0.5);
+}
+
+.trending-empty-text {
+    color: #657786;
+}
+
+/* Dark mode trending styles */
+[data-theme="dark"] .trending-card {
+    background-color: #192734;
+}
+
+[data-theme="dark"] .trending-item {
+    background-color: rgba(29, 161, 242, 0.15);
+}
+
+[data-theme="dark"] .trending-item:hover {
+    background-color: rgba(29, 161, 242, 0.25);
+}
+
+[data-theme="dark"] .trending-count {
+    color: #8899a6;
+}
+
+[data-theme="dark"] .trending-empty-text {
+    color: #8899a6;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+/* Text colors */
+.text-muted {
+    color: var(--muted-text) !important;
+}
+
+/* Media queries for responsive design */
+@media (max-width: 768px) {
+    .profile-header {
+        text-align: center;
+        padding: 20px;
+    }
+
+    .profile-avatar {
+        margin-bottom: 15px;
+    }
+
+    .card {
+        border-radius: 10px;
+    }
+
+    .navbar .form-control {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}

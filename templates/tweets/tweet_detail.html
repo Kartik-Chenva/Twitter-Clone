@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Tweet | Twitter Clone{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <!-- Tweet -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-3">
+                    <img src="{{ tweet.user.profile.profile_picture.url }}" alt="{{ tweet.user.username }}" class="rounded-circle me-2" style="width: 50px; height: 50px; object-fit: cover;">
+                    <div>
+                        <h5 class="mb-0">{{ tweet.user.username }}</h5>
+                        <a href="{% url 'tweets:profile' tweet.user.username %}" class="text-decoration-none text-muted">@{{ tweet.user.username }}</a>
+                    </div>
+                </div>
+                <p class="fs-5">{{ tweet.content }}</p>
+                {% if tweet.image %}
+                    <img src="{{ tweet.image.url }}" alt="Tweet image" class="img-fluid rounded mb-3">
+                {% endif %}
+                <div class="d-flex justify-content-between mt-3">
+                    <small class="text-muted">{{ tweet.created_at|date:"g:i A · M d, Y" }}</small>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between">
+                    <a href="#comment-form" class="text-decoration-none btn btn-sm btn-outline-secondary rounded-pill">
+                        <i class="far fa-comment"></i> {{ tweet.get_comment_count }}
+                    </a>
+                    <a href="{% url 'tweets:like_tweet' tweet.id %}" class="text-decoration-none like-btn btn btn-sm {% if is_liked %}btn-danger{% else %}btn-outline-danger{% endif %} rounded-pill" data-tweet-id="{{ tweet.id }}">
+                        {% if is_liked %}
+                            <i class="fas fa-heart"></i>
+                        {% else %}
+                            <i class="far fa-heart"></i>
+                        {% endif %}
+                        <span class="like-count">{{ tweet.get_like_count }}</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Comment Form -->
+        {% if user.is_authenticated %}
+            <div class="card mb-4" id="comment-form">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="far fa-comment me-2"></i>Add a Comment</h5>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            {{ form.content }}
+                        </div>
+                        <button type="submit" class="btn btn-primary rounded-pill">
+                            <i class="fas fa-paper-plane me-1"></i> Comment
+                        </button>
+                    </form>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- Comments -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Comments ({{ comments.count }})</h5>
+            </div>
+            <div class="card-body">
+                {% if comments %}
+                    {% for comment in comments %}
+                        <div class="d-flex mb-3 {% if not forloop.last %}border-bottom pb-3{% endif %}">
+                            <img src="{{ comment.user.profile.profile_picture.url }}" alt="{{ comment.user.username }}" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                            <div>
+                                <div class="d-flex align-items-center">
+                                    <h6 class="mb-0 me-2">{{ comment.user.username }}</h6>
+                                    <small class="text-muted">{{ comment.created_at|timesince }} ago</small>
+                                </div>
+                                <p class="mb-0">{{ comment.content }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted">No comments yet. Be the first to comment!</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    $(document).ready(function() {
+        // AJAX for liking tweets
+        $('.like-btn').click(function(e) {
+            e.preventDefault();
+
+            // Check if user is authenticated
+            {% if not user.is_authenticated %}
+                window.location.href = "{% url 'tweets:login' %}";
+                return;
+            {% endif %}
+
+            var tweetId = {{ tweet.id }};
+            var likeUrl = "{% url 'tweets:like_tweet' tweet.id %}";
+            var likeBtn = $(this);
+
+            // Disable the button temporarily to prevent multiple clicks
+            likeBtn.addClass('disabled');
+
+            $.ajax({
+                url: likeUrl,
+                type: 'GET',
+                headers: {'X-Requested-With': 'XMLHttpRequest'},
+                success: function(data) {
+                    var likeBtn = $('.like-btn');
+                    var likeIcon = likeBtn.find('i');
+                    var likeCount = likeBtn.find('.like-count');
+
+                    if (data.liked) {
+                        likeIcon.removeClass('far fa-heart').addClass('fas fa-heart');
+                        likeBtn.removeClass('btn-outline-danger').addClass('btn-danger');
+                    } else {
+                        likeIcon.removeClass('fas fa-heart').addClass('far fa-heart');
+                        likeBtn.removeClass('btn-danger').addClass('btn-outline-danger');
+                    }
+
+                    likeCount.text(data.like_count);
+                },
+                complete: function() {
+                    // Re-enable the button after the request completes
+                    setTimeout(function() {
+                        $('.like-btn').removeClass('disabled');
+                    }, 500);
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

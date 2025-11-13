@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}Search Results | Twitter Clone{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4 class="mb-0">Search Results for "{{ query }}"</h4>
+            </div>
+            <div class="card-body">
+                {% if not query %}
+                    <p class="text-muted">Enter a search term to find users or tweets.</p>
+                {% elif not users and not tweets %}
+                    <p class="text-muted">No results found for "{{ query }}".</p>
+                {% else %}
+                    <!-- Users Results -->
+                    {% if users %}
+                        <h5 class="mb-3">Users</h5>
+                        <div class="list-group mb-4">
+                            {% for user_result in users %}
+                                <a href="{% url 'tweets:profile' user_result.username %}" class="list-group-item list-group-item-action">
+                                    <div class="d-flex align-items-center">
+                                        <img src="{{ user_result.profile.profile_picture.url }}" alt="{{ user_result.username }}" class="rounded-circle me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                                        <div>
+                                            <h6 class="mb-0">{{ user_result.username }}</h6>
+                                            <small class="text-muted">@{{ user_result.username }}</small>
+                                        </div>
+                                    </div>
+                                </a>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Tweets Results -->
+                    {% if tweets %}
+                        <h5 class="mb-3">Tweets</h5>
+                        {% for tweet in tweets %}
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <img src="{{ tweet.user.profile.profile_picture.url }}" alt="{{ tweet.user.username }}" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                                        <div>
+                                            <h6 class="mb-0">{{ tweet.user.username }}</h6>
+                                            <small class="text-muted">@{{ tweet.user.username }} · {{ tweet.created_at|timesince }} ago</small>
+                                        </div>
+                                    </div>
+                                    <p>{{ tweet.content }}</p>
+                                    {% if tweet.image %}
+                                        <img src="{{ tweet.image.url }}" alt="Tweet image" class="img-fluid rounded mb-2">
+                                    {% endif %}
+                                    <div class="d-flex justify-content-between mt-3">
+                                        <a href="{% url 'tweets:tweet_detail' tweet.id %}" class="text-decoration-none">
+                                            <i class="far fa-comment text-muted"></i> {{ tweet.get_comment_count }}
+                                        </a>
+                                        <a href="{% url 'tweets:like_tweet' tweet.id %}" class="text-decoration-none like-btn" data-tweet-id="{{ tweet.id }}">
+                                            {% if user.is_authenticated and user in tweet.likes.all %}
+                                                <i class="fas fa-heart text-danger"></i>
+                                            {% else %}
+                                                <i class="far fa-heart text-muted"></i>
+                                            {% endif %}
+                                            <span class="like-count">{{ tweet.get_like_count }}</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    $(document).ready(function() {
+        // AJAX for liking tweets
+        $('.like-btn').click(function(e) {
+            e.preventDefault();
+            var tweetId = $(this).data('tweet-id');
+            var likeUrl = "{% url 'tweets:like_tweet' 0 %}".replace('0', tweetId);
+            
+            $.ajax({
+                url: likeUrl,
+                type: 'GET',
+                headers: {'X-Requested-With': 'XMLHttpRequest'},
+                success: function(data) {
+                    var likeBtn = $('[data-tweet-id="' + tweetId + '"]');
+                    var likeIcon = likeBtn.find('i');
+                    var likeCount = likeBtn.find('.like-count');
+                    
+                    if (data.liked) {
+                        likeIcon.removeClass('far fa-heart text-muted').addClass('fas fa-heart text-danger');
+                    } else {
+                        likeIcon.removeClass('fas fa-heart text-danger').addClass('far fa-heart text-muted');
+                    }
+                    
+                    likeCount.text(data.like_count);
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

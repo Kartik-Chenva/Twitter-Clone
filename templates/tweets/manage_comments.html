@@ -1,0 +1,217 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Comments{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h5>    
+                <a href="/custom_admin/" style="text-decoration: none;">
+                    <i class="fas fa-arrow-left"></i>
+                </a> All Comments 
+                <span class="badge bg-secondary">{{ comments_count }}</span>
+            </h5>
+        </div>
+        <div class="col-md-6">
+            <!-- Unified Search Form -->
+            <form method="GET" class="d-flex">
+                <div class="input-group">
+                    <input type="text" 
+                           class="form-control" 
+                           name="search" 
+                           placeholder="Search by User, Tweet, or Comment content..." 
+                           value="{{ search_query }}"
+                           style="border-radius: 25px 0 0 25px; color: #0d6efd;">
+                    <button class="btn btn-outline-primary" 
+                            type="submit"
+                            style="border-radius: 0 25px 25px 0;">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    {% if search_query %}
+                        <a href="{% url 'tweets:manage_comments' %}" 
+                           class="btn btn-outline-secondary ms-2"
+                           title="Clear search">
+                            <i class="fas fa-times"></i>
+                        </a>
+                    {% endif %}
+                </div>
+            </form>
+            <small class="text-muted mt-1 d-block">
+                <i class="fas fa-info-circle me-1"></i>
+                Search by username, tweet content, or comment text
+            </small>
+        </div>
+    </div>
+
+    <!-- Messages Display -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-3" role="alert">
+                <i class="fas fa-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}exclamation-triangle{% else %}info-circle{% endif %} me-2"></i>
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Search Results Indicator -->
+    {% if search_query %}
+        <div class="alert alert-info mb-3">
+            <i class="fas fa-search me-2"></i>
+            <strong>Search Results:</strong> Showing comments matching "{{ search_query }}"
+            <span class="badge bg-primary ms-2">{{ comments|length }} result(s)</span>
+        </div>
+    {% endif %}
+
+    <table class="table table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>User</th>
+                <th>Tweet</th>
+                <th>Comment</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% if comments %}
+            {% for comment in comments %}
+            <tr style="text-decoration: none; color:  rgb(136, 125, 125); font-weight: 600;">
+                <td>{{ forloop.counter }}</td>
+                <td>{{ comment.user.username }}</td>
+                <td>{{ comment.tweet.content|truncatechars:30 }}</td>
+                <td>{{ comment.content|truncatechars:50 }}</td>
+                <td>{{ comment.created_at|date:"Y-m-d H:i" }}</td>
+                <td class="text-center" style="white-space: nowrap;">
+                    <a href="{% url 'tweets:edit_comment' comment.id %}" 
+                       class="btn btn-outline-primary btn-circle btn-sm" 
+                       title="Edit Comment"
+                       onclick="return confirm('Are you sure you want to edit this comment?');">
+                        <i class="fas fa-edit fa-sm"></i>
+                    </a>
+                    <a href="{% url 'tweets:delete_comment' comment.id %}" 
+                       class="btn btn-outline-danger btn-circle btn-sm" 
+                       title="Delete Comment">
+                        <i class="fas fa-trash-alt fa-sm"></i>
+                    </a>
+                </td>
+                <style>
+                    .btn-circle {
+                    width: 32px;
+                    height: 32px;
+                    padding: 0;
+                    border-radius: 50%;
+                    text-align: center;
+                    font-size: 14px;
+                    line-height: 32px;
+                }
+                </style>
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="6" class="text-center py-4">
+                    {% if search_query %}
+                        <div class="text-muted">
+                            <i class="fas fa-search fa-2x mb-3"></i>
+                            <h6>No comments found for "{{ search_query }}"</h6>
+                            <p class="mb-0">Try adjusting your search terms or <a href="{% url 'tweets:manage_comments' %}">view all comments</a></p>
+                        </div>
+                    {% else %}
+                        <div class="text-muted">
+                            <i class="fas fa-comments fa-2x mb-3"></i>
+                            <h6>No comments available</h6>
+                            <p class="mb-0">There are no comments in the system yet.</p>
+                        </div>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
+
+<!-- Premium World-Class Pagination -->
+{% if comments.has_other_pages %}
+<nav aria-label="Page navigation" class="mt-5" style="margin: 100px;">
+      <ul class="pagination justify-content-center" style="gap:6px;">
+
+        <!-- Previous button -->
+        {% if comments.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ comments.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}"
+               style="color:#0d6efd; font-size:14px; font-weight:500;
+                      border:1px solid #dee2e6; background:#fff; 
+                      padding:8px 14px; border-radius:50px; 
+                      transition:all 0.2s ease;"
+               onmouseover="this.style.background='#0d6efd'; this.style.color='white';"
+               onmouseout="this.style.background='white'; this.style.color='#0d6efd';">
+              ‹ Previous
+            </a>
+          </li>
+        {% else %}
+          <li class="page-item disabled">
+            <span class="page-link"
+                  style="color:#adb5bd; font-size:14px; padding:8px 14px;
+                         border:1px solid #dee2e6; border-radius:50px; background:#f8f9fa;">
+              ‹ Previous
+            </span>
+          </li>
+        {% endif %}
+
+        <!-- Page numbers -->
+        {% for num in comments.paginator.page_range %}
+          {% if num == comments.number %}
+            <li class="page-item active">
+              <span class="page-link"
+                    style="color:white; background:#0d6efd; border-radius:50%; 
+                           width:38px; height:38px; display:flex; align-items:center; 
+                           justify-content:center; font-weight:600; border:none;
+                           box-shadow:0 3px 6px rgba(0,0,0,0.15);">
+                {{ num }}
+              </span>
+            </li>
+          {% elif num >= comments.number|add:'-3' and num <= comments.number|add:'3' %}
+                        <li class="page-item">
+              <a class="page-link" href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}"
+                 style="color:#0d6efd; font-size:14px; border:1px solid #dee2e6;
+                        width:38px; height:38px; display:flex; align-items:center;
+                        justify-content:center; border-radius:50%; background:white;
+                        transition:all 0.2s ease;"
+                 onmouseover="this.style.background='#e7f1ff';"
+                 onmouseout="this.style.background='white';">
+                {{ num }}
+              </a>
+            </li>
+          {% endif %}
+        {% endfor %}
+
+        <!-- Next button -->
+        {% if comments.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ comments.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}"
+               style="color:#0d6efd; font-size:14px; font-weight:500;
+                      border:1px solid #dee2e6; background:#fff; 
+                      padding:8px 14px; border-radius:50px; 
+                      transition:all 0.2s ease;"
+               onmouseover="this.style.background='#0d6efd'; this.style.color='white';"
+               onmouseout="this.style.background='white'; this.style.color='#0d6efd';">
+              Next ›
+            </a>
+          </li>
+        {% else %}
+          <li class="page-item disabled">
+            <span class="page-link"
+                  style="color:#adb5bd; font-size:14px; padding:8px 14px;
+                         border:1px solid #dee2e6; border-radius:50px; background:#f8f9fa;">
+              Next ›
+            </span>
+          </li>
+        {% endif %}
+
+      </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}

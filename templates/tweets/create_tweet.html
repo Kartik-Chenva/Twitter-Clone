@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Tweet | Twitter Clone{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="mb-0">Create a New Tweet</h3>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="{{ form.content.id_for_label }}" class="form-label">What's happening?</label>
+                        {{ form.content }}
+                        <div class="form-text text-end">
+                            <span id="char-count">0</span>/280
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="{{ form.image.id_for_label }}" class="form-label">Add Image (optional)</label>
+                        {{ form.image }}
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'tweets:home' %}" class="btn btn-outline-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Tweet</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Style for Django form fields */
+    .form-control {
+        display: block;
+        width: 100%;
+    }
+    
+    /* Override Django's default styling for form fields */
+    input, select, textarea {
+        display: block;
+        width: 100%;
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #212529;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        border-radius: 0.25rem;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    $(document).ready(function() {
+        // Character counter for tweet content
+        $('#id_content').on('input', function() {
+            var charCount = $(this).val().length;
+            $('#char-count').text(charCount);
+            
+            if (charCount > 280) {
+                $('#char-count').addClass('text-danger');
+            } else {
+                $('#char-count').removeClass('text-danger');
+            }
+        });
+    });
+</script>
+{% endblock %}

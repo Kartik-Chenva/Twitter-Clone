@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load socialaccount %}
+
+{% block title %}Login | Twitter Clone{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="text-center">Login</h3>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="username_or_email" class="form-label">Username or Email</label>
+                        <input type="text" class="form-control" id="username_or_email" name="username_or_email" placeholder="Enter your username or email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                        <div class="text-end mt-1">
+                            <a href="{% url 'tweets:password_reset' %}" class="text-decoration-none small">Forgot password?</a>
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary rounded-pill">
+                            <i class="fas fa-sign-in-alt me-1"></i> Login
+                        </button>                        
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-center py-3">
+                <p class="mb-2">Don't have an account? <a href="{% url 'tweets:register' %}" class="text-decoration-none fw-bold">Register</a></p>
+                <small class="text-muted">
+                    <i class="fas fa-info-circle me-1"></i>
+                    Use "Admin Panel" button above to access administrative features
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
