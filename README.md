@@ -1,4 +1,4 @@
-🐦 Twitter Clone (Django Project) :
+<h1>🐦 Twitter Clone (Django Project) :</h1>
           A social media web application inspired by Twitter, built using Django.
 Users can sign up, log in, create tweets, follow other users, and view a personalized feed showing posts only from people they follow.
 
